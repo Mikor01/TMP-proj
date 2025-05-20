@@ -1,7 +1,28 @@
 #include "menu_actions.h"
 #include "nokia5110.h"
 
-char menu_items[MENU_ITEM_COUNT][MENU_NAME_LENGTH] = {
+uint8_t iMenuCurrent = 0;
+
+void menu_setup()
+{
+	register uint8_t i;
+	
+	for (i = 0; i < MENU_ITEM_COUNT; i++) {
+		nokia_lcd_set_cursor(1, i * 8); // 8 pixels height per row, x offset of 1 so that one column of infill is in front of text for readability
+		if (i==iMenuCurrent)
+		{
+			nokia_lcd_write_string_inverted(cMenuItems[i], 1,1); // rendering with full row infill (third param)
+		}
+		else
+		{
+			nokia_lcd_write_string(cMenuItems[i], 1);
+		}
+
+	}
+	updateLCD(iMenuCurrent);
+};
+
+const char cMenuItems[MENU_ITEM_COUNT][MENU_NAME_LENGTH] = {
 	"menu1",
 	"menu2",
 	"menu3",

@@ -18,7 +18,6 @@
 #include <util/delay.h>
 #include "nokia5110_chars.h"
 
-
 static struct {
     /* screen byte massive */
     uint8_t screen[504];
@@ -181,21 +180,34 @@ void nokia_lcd_write_char(char code, uint8_t scale)
 void nokia_lcd_write_char_inverted(char code, uint8_t scale, uint8_t fill)
 {
 	register uint8_t x, y;
-	
-	for (x = 0; x < 5*scale; x++)
+	if(fill)
 	{
-		for (y = 0; y < 7*scale; y++){
-			if (pgm_read_byte(&CHARSET[code-32][x/scale]) & (1 << y/scale))
-
-			if (!fill){
-				nokia_lcd_set_pixel(nokia_lcd.cursor_x-1 + x, nokia_lcd.cursor_y + y, 1); //background black
-				nokia_lcd_set_pixel(nokia_lcd.cursor_x+1 + 5 * scale, nokia_lcd.cursor_y + y, 1); // infill column between chars
-				
+		for (x = 0; x < 5*scale; x++)
+		{
+			for (y = 0; y < 7*scale; y++){
+				if (pgm_read_byte(&CHARSET[code-32][x/scale]) & (1 << y/scale))
+				nokia_lcd_set_pixel(nokia_lcd.cursor_x + x, nokia_lcd.cursor_y + y, 0); //text white
 			}
-			nokia_lcd_set_pixel(nokia_lcd.cursor_x + x, nokia_lcd.cursor_y + y, 0); //text white
 		}
 	}
 	
+	if (!fill){
+		for (x = 0; x < 5 * scale; x++) {
+			for (y = 0; y < 7 * scale; y++) {
+				if (pgm_read_byte(&CHARSET[code - 32][x / scale]) & (1 << (y / scale))) {
+					nokia_lcd_set_pixel(nokia_lcd.cursor_x + x, nokia_lcd.cursor_y + y, 0); // draw background
+					} else {
+					nokia_lcd_set_pixel(nokia_lcd.cursor_x + x, nokia_lcd.cursor_y + y, 1); // draw text
+				}
+			}
+		}
+
+		// Fill gap column between characters (1px wide column)
+		for (y = 0; y < 7 * scale; y++) {
+			nokia_lcd_set_pixel(nokia_lcd.cursor_x + 5 * scale, nokia_lcd.cursor_y + y, 1); // white pixel to maintain contrast
+			nokia_lcd_set_pixel(0, nokia_lcd.cursor_y + y, 1); // white pixel to maintain contrast
+		}
+	}
 	nokia_lcd.cursor_x += 5*scale + 1;
 	if (nokia_lcd.cursor_x >= 84) {
 		nokia_lcd.cursor_x = 0;
@@ -215,11 +227,13 @@ void nokia_lcd_write_string(const char *str, uint8_t scale)
 
 void nokia_lcd_write_string_inverted(const char *str, uint8_t scale, uint8_t fill)
 {
+	register uint8_t x, y;
+	
 	if (fill){
-		for(int x=0; x<84; x++)
+		for(x=0; x<84; x++)
 		{
-			for (int y = 0; y < 7*scale; y++){
-				nokia_lcd_set_pixel(x, nokia_lcd.cursor_y+y, 1); // infill column between chars
+			for (y = 0; y < 7*scale; y++){
+				nokia_lcd_set_pixel(x, nokia_lcd.cursor_y+y, 1); // infill
 			}
 		}
 	}

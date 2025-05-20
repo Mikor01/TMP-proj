@@ -1,10 +1,17 @@
 #ifndef MENU_ACTIONS_H_
 #define MENU_ACTIONS_H_
 
+#include <avr/pgmspace.h>
+#include <stdint.h>
+
 #define MENU_ITEM_COUNT 4
 #define MENU_NAME_LENGTH 8
 
-extern char menu_items[MENU_ITEM_COUNT][MENU_NAME_LENGTH];
+extern uint8_t iMenuCurrent;
+
+extern const char cMenuItems[MENU_ITEM_COUNT][MENU_NAME_LENGTH];
+
+void menu_update(void);
 
 void (*menu_actions[MENU_ITEM_COUNT])(void);
 
