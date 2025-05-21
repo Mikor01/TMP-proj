@@ -19,7 +19,7 @@ void menu_setup()
 		}
 
 	}
-	updateLCD(iMenuCurrent);
+	//updateLCD(iMenuCurrent);
 };
 
 const char cMenuItems[MENU_ITEM_COUNT][MENU_NAME_LENGTH] = {
