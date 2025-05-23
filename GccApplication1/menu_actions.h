@@ -3,11 +3,13 @@
 
 #include <avr/pgmspace.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 #define MENU_ITEM_COUNT 4
 #define MENU_NAME_LENGTH 8
 
 extern uint8_t iMenuCurrent;
+extern bool bInSubMenu;
 
 extern const char cMenuItems[MENU_ITEM_COUNT][MENU_NAME_LENGTH];
 

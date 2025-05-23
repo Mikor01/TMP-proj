@@ -28,9 +28,8 @@ int main(void)
     nokia_lcd_init();
     nokia_lcd_clear();
 	setupEncoderPCINT();
-	
+	updateLCD(iMenuCurrent);
     while (1) {
-		updateLCD(iMenuCurrent);
 		_delay_ms(50);
     }
 }

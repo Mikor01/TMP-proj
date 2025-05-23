@@ -2,6 +2,7 @@
 #include "nokia5110.h"
 
 uint8_t iMenuCurrent = 0;
+bool bInSubMenu = false;
 
 void menu_setup()
 {
@@ -36,6 +37,7 @@ void (*menu_actions[MENU_ITEM_COUNT])(void) = {
 };
 
 void menu1_action(void) {
+	bInSubMenu = true;
 	nokia_lcd_clear();
 	nokia_lcd_set_cursor(0, 0);
 	nokia_lcd_write_string("You selected:", 1);
@@ -45,6 +47,7 @@ void menu1_action(void) {
 }
 
 void menu2_action(void) {
+	bInSubMenu = true;
 	nokia_lcd_clear();
 	nokia_lcd_set_cursor(0, 0);
 	nokia_lcd_write_string("You selected:", 1);
@@ -54,6 +57,7 @@ void menu2_action(void) {
 }
 
 void menu3_action(void) {
+	bInSubMenu = true;
 	nokia_lcd_clear();
 	nokia_lcd_set_cursor(0, 0);
 	nokia_lcd_write_string("You selected:", 1);
@@ -63,6 +67,7 @@ void menu3_action(void) {
 }
 
 void menu4_action(void) {
+	bInSubMenu = true;
 	nokia_lcd_clear();
 	nokia_lcd_set_cursor(0, 0);
 	nokia_lcd_write_string("You selected:", 1);

@@ -32,34 +32,50 @@ ISR(PCINT1_vect)  // PCINT8~14 covers PC0..PC6 (ATmega328P)
 		1,  0,  0, -1,
 		0, -1,  1,  0
 	};
-
+if(!bInSubMenu){
 	old_AB <<= 2;
 	old_AB |= (PINC & 0x03);  // Read PC0 (A) and PC1 (B), combine into 2 bits
 	enc_val += pgm_read_byte(&enc_states[old_AB & 0x0F]);
-
-	if (enc_val > 3) {  // Rotated right (CW)
-		if (iMenuCurrent <= MENU_ITEM_COUNT-1)
-			if(iMenuCurrent==MENU_ITEM_COUNT-1)
-				iMenuCurrent=0;
-			else
-				iMenuCurrent++;
-		enc_val = 0;
-		} 
-	else if (enc_val < -3) {  // Rotated left (CCW)
-		if (iMenuCurrent >= 0)
-			if(iMenuCurrent==0)
-				iMenuCurrent=MENU_ITEM_COUNT-1;
-			else
-				iMenuCurrent--;
+	
+		if (enc_val > 3) {  // Rotated right (CW)
+			if (iMenuCurrent <= MENU_ITEM_COUNT-1)
+				if(iMenuCurrent==MENU_ITEM_COUNT-1){
+					iMenuCurrent=0;
+					updateLCD(iMenuCurrent);
+				}
+				else{
+					iMenuCurrent++;
+					updateLCD(iMenuCurrent);
+				}
+			enc_val = 0;
+			} 
+		else if (enc_val < -3) {  // Rotated left (CCW)
+			if (iMenuCurrent >= 0)
+				if(iMenuCurrent==0){
+					iMenuCurrent=MENU_ITEM_COUNT-1;
+					updateLCD(iMenuCurrent);
+				}
+		else
+		{
+			iMenuCurrent--;
+			updateLCD(iMenuCurrent);
+		}
 		enc_val = 0;
 		}
-	
+}
 	static uint8_t last_state = 1;
 	uint8_t current_state = (PINC & (1 << PC2)) ? 1 : 0;
 
 	if (last_state == 1 && current_state == 0) {
 		// Detected falling edge (button press)
-		menu_actions[iMenuCurrent]();
+		if(bInSubMenu){
+			updateLCD(iMenuCurrent);
+			bInSubMenu=false;
+		}
+		else{
+			menu_actions[iMenuCurrent]();
+			bInSubMenu=true;
+		}
 	}
 	last_state = current_state;
 }
