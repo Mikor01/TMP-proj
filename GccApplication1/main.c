@@ -1,7 +1,6 @@
 #define F_CPU 16000000UL
 #include <avr/io.h>
 #include <util/delay.h>
-//#include <avr/interrupt.h>
 #include "nokia5110.h"
 #include "menu_actions.h"
 
@@ -12,6 +11,9 @@
 #define LCD_DC PB3  ->DC
 #define LCD_DIN PB4 ->Din
 #define LCD_CLK PB5 -> CLK
+encoder_button -> PC2
+encoder_dt -> PC1
+encoder_clk -> PC0
 VCC, BL -> 5V
 GND -> GND
 */
