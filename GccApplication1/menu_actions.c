@@ -1,5 +1,6 @@
 #include "menu_actions.h"
 #include "nokia5110.h"
+#include "draw.h"
 
 // Global variables
 uint8_t iMenuCurrent = 0;       // Current selected item in main menu
@@ -41,80 +42,56 @@ void draw_main_menu(void)
 void draw_sub_menu(void) {
 	nokia_lcd_clear();
 	nokia_lcd_set_cursor(0, 0);
-
-	if (iMenuCurrent == 0) {
-		nokia_lcd_write_string("Settings:", 1);
-		for (uint8_t i = 0; i < SUB_MENU_1_ITEM_COUNT; i++) {
-			nokia_lcd_set_cursor(1, (i + 1) * 8);
-			if (i == iSubMenu1Current) {
-				nokia_lcd_write_string_inverted(cSubMenu1Items[i], 1, 0);
-				} else {
-				nokia_lcd_write_string(cSubMenu1Items[i], 1);
-			}
-		}
-		} else {
+	
+	switch (iMenuCurrent)
+	{
+		case 0:
+		draw_settings();
+		break;
+		
+		case 1:
+		draw_about_menu();
+		break;
+		
+		default:
 		nokia_lcd_write_string("You selected:", 1);
 		nokia_lcd_set_cursor(0, 8);
 		nokia_lcd_write_string(cMenuItems[iMenuCurrent], 2);
+		break;
 	}
-	nokia_lcd_render();
-}
-
-//Sub-sub menu displays
-void draw_sub_sub_menu_A(void) {
-	nokia_lcd_clear();
-	nokia_lcd_set_cursor(0, 0);
-	nokia_lcd_write_string("Sub-Submenu", 1);
-	nokia_lcd_set_cursor(0, 8);
-	nokia_lcd_write_string("From Settings", 1);
-	nokia_lcd_set_cursor(0, 16);
-	nokia_lcd_write_string("-> Option A", 1);
-	nokia_lcd_render();
-}
-
-void draw_sub_sub_menu_B(void) {
-	nokia_lcd_clear();
-	nokia_lcd_set_cursor(0, 0);
-	nokia_lcd_write_string("Sub-Submenu", 1);
-	nokia_lcd_set_cursor(0, 8);
-	nokia_lcd_write_string("From Settings", 1);
-	nokia_lcd_set_cursor(0, 16);
-	nokia_lcd_write_string("-> Option B", 1);
-	nokia_lcd_render();
-}
-
-void draw_about_menu(void) {
-	nokia_lcd_clear();
-	nokia_lcd_set_cursor(0, 0);
-	nokia_lcd_write_string_inverted("   Authors:", 1,1);
-	nokia_lcd_set_cursor(0, 8);
-	nokia_lcd_write_string("  Mikolaj R", 1);
-	nokia_lcd_set_cursor(0, 16);
-	nokia_lcd_write_string("    Jan R", 1);
-	nokia_lcd_set_cursor(0, 32);
-	nokia_lcd_write_string("   :)", 2);
 	nokia_lcd_render();
 }
 
 // Central function to update the LCD display based on the current mode
 void updateLCD(void)
 {
-	if (currentMenuMode == MENU_MODE_MAIN) {
-			draw_main_menu();
-		} else if (currentMenuMode == MENU_MODE_SUB) {
-			if(iMenuCurrent == 1){ //about menu
-				draw_about_menu();
-			}
-			else
-			{
-				draw_sub_menu();
-			}		
-		} else if (currentMenuMode == MENU_MODE_SUB_SUB) {
-			if(iSubMenu1Current == 0)
+	
+	switch (currentMenuMode)
+	{
+	case MENU_MODE_MAIN:
+		draw_main_menu();
+		break;
+		
+	case MENU_MODE_SUB:
+		draw_sub_menu();
+		break;
+		
+	case MENU_MODE_SUB_SUB:
+	
+		switch(iSubMenu1Current){
+			case 0:
 				draw_sub_sub_menu_A();
-			else if (iSubMenu1Current == 1)
+				break;
+				
+			case 1:
 				draw_sub_sub_menu_B();
+				break;
+			
+		}
+		break;
+		
 	}
+
 }
 
 
